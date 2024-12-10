@@ -20,14 +20,32 @@ namespace cris_cros
     /// </summary>
     public partial class MainWindow : Window
     {
+        HashSet<string> words;
         public MainWindow()
         {
             InitializeComponent();
+            words = new HashSet<string>();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+;
+        }
 
+        private void Button_Click_Add(object sender, RoutedEventArgs e)
+        {
+            string currWord = textBox.Text;
+            if (currWord.Contains(" ")) {
+                MessageBox.Show("Введите только одно слово!");
+                return;
+            }
+            if (currWord == null) return;
+            words.Add(currWord);
+        }
+
+        private void Button_Click_Start(object sender, RoutedEventArgs e)
+        {
+            foreach (string word in words) MessageBox.Show(word);
         }
     }
 }
