@@ -45,7 +45,20 @@ namespace cris_cros
 
         private void Button_Click_Start(object sender, RoutedEventArgs e)
         {
-            foreach (string word in words) MessageBox.Show(word);
+            int _x = 10;
+            int _y = 10;
+            WordTable wordTable = new WordTable(_x, _y);
+            wordTable.Add("ahah", 0, 0, true);
+            wordTable.Add("hehehe", 1, 0, true);
+
+
+            char[,] table = wordTable.GetTable();
+            PaintTable(table, 20, 20);
+        }
+
+        public void PaintTable(char[,] table, int x, int y)
+        {
+
         }
     }
 }
