@@ -10,8 +10,8 @@ namespace cris_cros
     {
         int X;
         int Y;
-        int height;
-        int width;
+        public int height;
+        public int width;
 
         public List<Word> words = new List<Word>();
 

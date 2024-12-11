@@ -21,6 +21,13 @@ namespace cris_cros
     public partial class MainWindow : Window
     {
         HashSet<string> words;
+        WordTable table;
+
+        double canvasWidth;
+        double canvasHeight;
+
+        double boxSize = 20;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +37,20 @@ namespace cris_cros
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 ;
+        }
+        private void Canvas_Size_Changed(object sender, SizeChangedEventArgs e)
+        {
+            if (table != null)
+            {
+                canvasHeight = Canvas.ActualHeight;
+                canvasWidth = Canvas.ActualWidth;
+                double x = (canvasWidth - table.width * boxSize) / 2;
+                double y = (canvasHeight - table.height * boxSize) / 2;
+
+                //Вызов отрисовки в координатах
+                PaintTable(table, x, y);
+            }
+
         }
 
         private void Button_Click_Add(object sender, RoutedEventArgs e)
@@ -51,34 +72,45 @@ namespace cris_cros
                 MessageBox.Show("0");
                 return;
             }
-            PaintTable(wordTable, 20, 20);
+
+            //Координаты цента
+            canvasWidth = Canvas.ActualWidth;
+            canvasHeight = Canvas.ActualHeight;
+            double x = (canvasWidth - wordTable.width * boxSize) / 2;
+            double y = (canvasHeight - wordTable.height * boxSize) / 2;
+            this.table = wordTable;
+
+            //Вызов отрисовки в координатах
+            PaintTable(wordTable, x, y);
         }
 
-        public void PaintTable(WordTable table, int x, int y)
+        public void PaintTable(WordTable table, double x, double y)
         {
             List<Word> words = table.words;
             Canvas.Children.Clear();
             Rectangle R;
             foreach (Word word in words)
             {
-                int X = x + word.x*20;
-                int Y = y + word.y*20;
+                double X = x + word.x*boxSize;
+                double Y = y + word.y*boxSize;
                 int isVert = word.isVertical ? 1 : 0;
                 for (int i = 0; i < word.size; i++)
                 {
                     // Расчитываем координаты ячеки с буквой
-                    int letterX = X + i * 20 * (Math.Abs(isVert - 1));
-                    int letterY = Y + i * 20 * isVert;
+                    double letterX = X + i * boxSize * (Math.Abs(isVert - 1));
+                    double letterY = Y + i * boxSize * isVert;
 
                     //Рисуем ячейку
                     R = new Rectangle();
                     R.Width = 20;
                     R.Height = 20;
-                    R.Margin = new Thickness(letterX, letterY, 0, 0);
                     R.Stroke = new SolidColorBrush(Colors.Black);
                     R.StrokeThickness = 2;
                     R.Fill = new SolidColorBrush(Colors.White);
 
+                    //Позиционирование
+                    Canvas.SetLeft(R, letterX);
+                    Canvas.SetTop(R, letterY);
                     Canvas.Children.Add(R);
 
                     //Добавляем текст
