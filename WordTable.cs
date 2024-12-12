@@ -49,32 +49,81 @@ namespace cris_cros
                 {
                     if (word.isVertical)
                     {
-                        if (x == word.x && (y >= word.y || y <= word.y + word.size)) return false;
-                        if (((word.x - 1 == x) || (word.x + 1 == x)) || ((word.y - 1 == y + newWord.size) || (word.y + 1 == y))) return false;
+                        //Проверка в одной ли области y
+                        if ((word.y <= y && y <= word.y + word.size) || (y <= word.y && word.y <= y + newWord.size))
+                        {
+                            //Проверка справа или слева
+                            if (x + 1 == word.x || x - 1 == word.x) return false;
+                        }
+                        //Проверка на одной ли линии
+                        if (x == word.x)
+                        {
+                            //Снизу от нового слова
+                            if (y + newWord.size + 1 == word.y) return false;
+                            //Сверху от нового слова
+                            if (y - 1 == word.y + word.size) return false;
+                            //Пересикаются ли
+                            if ((y <= word.y && word.y <= y + newWord.size) || (word.y <= y && y <= word.y + word.size)) return false;
+                        }
                     }
                     else
-                    {
-                        if (y == word.y && (x >= word.x || x <= word.x + word.size)) return false;
-                        if (((word.x - 1 == x+newWord.size) || (word.x + 1 == x)) || ((word.y - 1 == y) || (word.y + 1 == y))) return false;
-                    }
-                }else
-                {
-                    if (!word.isVertical)
-                    {
-                        if ((word.x <= x && x <=  word.x + word.size) && (y <= word.y && word.y <= y + newWord.size))
+                    { 
+                        //Проверка в одной ли области x
+                        if ((word.x <= x && x <= word.x + word.size) || (x <= word.x && word.x <= x + newWord.size))
                         {
-                            int incX = x;
-                            int incY = word.y;
-                            if (word[incX] != newWord[incY]) return false;
+                            //Проверка в сверху или снизу
+                            if (y+1 == word.y || y-1 == word.y) return false;
+                        }
+                        //Проверка на одной ли линии
+                        if (y == word.y)
+                        {
+                            //Справа от нового слова
+                            if (x+newWord.size + 1 == word.x) return false;
+                            //Слева от нового слова
+                            if (x - 1 == word.x + word.size) return false;
+                            //Пересикаются ли
+                            if ((x <= word.x && word.x <= x + newWord.size) || (word.x <= x && x <= word.x + word.size)) return false; 
+                        }
+                    }
+                }
+                //Если слова имеют разную ориентацию
+                else
+                {
+                    //Новое слово горизонтально, а старое вертикально
+                    if (word.isVertical)
+                    {
+                        //Находятся в спорикосновении
+
+                        //Новое слово выше или ниже
+                        if ((x <= word.x && word.x <= x + newWord.size - 1) && (y == word.y - 1 || y == word.y + word.size)) return false;
+                        //Новое слово справа или слева
+                        if ((word.y <= y && y <= word.y + word.size - 1) && (x == word.x + 1 || x + newWord.size == word.x)) return false;
+
+                        //Пересекаются
+                        if ((x <= word.x && word.x <= x + newWord.size-1) && (word.y <= y && y <= word.y + word.size-1))
+                        {
+                            int indX = word.x - x;
+                            int indY = y - word.y;
+                            //Равны ли символы на пересечении
+                            if (newWord[indX] != word[indY]) return false;
                         }
                     }
                     else
                     {
-                        if (x <= word.x && word.x <= x+newWord.size && word.y <= y && y <= word.y + word.size)
+                        //Находятся в соприкосновении
+
+                        //Новое слово выше или ниже
+                        if ((word.x <= x && x <= word.x + word.size - 1) && (word.y == y + newWord.size || y == word.y + 1)) return false;
+                        //Новое слово справа или слева
+                        if ((y <= word.y && word.y <= y + newWord.size - 1) && (x == word.x + word.size || x == word.x - 1)) return false;
+
+                        //Пересекаются
+                        if ((word.x <= x && x <= word.x + word.size-1) && (y <= word.y && word.y <= y+newWord.size-1))
                         {
-                            int incX = word.x;
-                            int incY = y;
-                            if (word[incY] != newWord[incX]) return false;
+                            int indX = x - word.x;
+                            int indY = word.y - y;
+                            //Равны ли символы на пересечении
+                            if (newWord[indY] != word[indX]) return false;
                         }
                     }
                 }
@@ -140,7 +189,7 @@ namespace cris_cros
 
                                 Word curWord = new Word(newWordX, newWordY, word, true);
 
-                                if (IsCanAdd(insWord, wordToAdd, newWordX, newWordY)) {
+                                if (IsCanAdd(insWord, curWord, newWordX, newWordY)) {
 
                                     if (!isAdd) wordToAdd = curWord;
 
@@ -168,7 +217,7 @@ namespace cris_cros
 
                                 Word curWord = new Word(newWordX,  newWordY, word, false);
 
-                                if (IsCanAdd(insWord, wordToAdd, newWordX, newWordY))
+                                if (IsCanAdd(insWord, curWord, newWordX, newWordY))
                                 {
                                     if (!isAdd) wordToAdd = curWord;
                                     
