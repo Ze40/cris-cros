@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBox Name="textBox" HorizontalAlignment="Left" Margin="60,0,0,36" TextWrapping="Wrap" Text="Введите слово" Width="121" TextChanged="TextBox_TextChanged" Height="23" VerticalAlignment="Bottom"/>
+        <TextBox Name="textBox" HorizontalAlignment="Left" Margin="60,0,0,36" TextWrapping="Wrap" Text="Введите слово" Width="121" TextChanged="TextBox_TextChanged" Height="23" VerticalAlignment="Bottom" KeyDown="TextBox_KeyDown"/>
         <Button Content="Добавить" HorizontalAlignment="Left" Height="23" Margin="186,0,0,36" VerticalAlignment="Bottom" Width="89" Click="Button_Click_Add"/>
         <Button Content="Начать" HorizontalAlignment="Right" Margin="0,0,60,36" VerticalAlignment="Bottom" Width="120" Height="23" Click="Button_Click_Start"/>
         <Canvas Margin="60,28,60,88" Background="LightGray" Name="Canvas" SizeChanged="Canvas_Size_Changed"/>

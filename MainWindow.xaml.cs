@@ -62,7 +62,26 @@ namespace cris_cros
             }
             if (currWord == null) return;
             words.Add(currWord);
+            textBox.Focus();
+            textBox.Clear();
         }
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string currWord = textBox.Text;
+                if (currWord.Contains(" "))
+                {
+                    MessageBox.Show("Введите только одно слово!");
+                    return;
+                }
+                if (currWord == null) return;
+                words.Add(currWord);
+                textBox.Focus();
+                textBox.Clear();
+            }
+        }
+
 
         private void Button_Click_Start(object sender, RoutedEventArgs e)
         {

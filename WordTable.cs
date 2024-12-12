@@ -132,18 +132,18 @@ namespace cris_cros
             return true;
         }
 
-        public int CountOfIntersection(Word incWord, int x, int y)
+        public int CountOfIntersection(Word newWord, int x, int y)
         {
             int cnt = 0;
             foreach (Word word in words)
             {
-                if (incWord.isVertical == word.isVertical) continue;
+                if (newWord.isVertical == word.isVertical) continue;
                 if (word.isVertical)
                 {
-                    if ((word.x <= x + incWord.size && word.x >= x) && (y <= word.y + word.size && y >= word.y)) cnt++;
+                    if ((x <= word.x && word.x <= x + newWord.size - 1) && (word.y <= y && y <= word.y + word.size - 1)) cnt++;
                     continue;
                 }
-                if ((word.y <= y + incWord.size && word.y >= y) && (x <= word.x + word.size && x >= word.x)) cnt ++;
+                if ((word.x <= x && x <= word.x + word.size - 1) && (y <= word.y && word.y <= y + newWord.size - 1)) cnt ++;
             }
             return cnt;
         }
@@ -195,7 +195,7 @@ namespace cris_cros
 
                                     // найти количество перестановок
                                     isAdd = true;
-                                    inter = CountOfIntersection(insWord, newWordX, newWordY);
+                                    inter = CountOfIntersection(curWord, newWordX, newWordY);
                                     newHeigth = word.Length > height ? word.Length : height;
                                     minRatio = newHeigth * width / (countOfCrossing + inter);
 
@@ -222,7 +222,7 @@ namespace cris_cros
                                     if (!isAdd) wordToAdd = curWord;
                                     
                                     isAdd = true;
-                                    inter = CountOfIntersection(insWord, newWordX, newWordY);
+                                    inter = CountOfIntersection(curWord, newWordX, newWordY);
                                     newWidth = word.Length > width ? word.Length : width;
                                     minRatio = newWidth * height / (countOfCrossing + inter);
 
