@@ -57,10 +57,46 @@ namespace cris_cros
                         if (y == word.y && (x >= word.x || x <= word.x + word.size)) return false;
                         if (((word.x - 1 == x+newWord.size) || (word.x + 1 == x)) || ((word.y - 1 == y) || (word.y + 1 == y))) return false;
                     }
+                }else
+                {
+                    if (!word.isVertical)
+                    {
+                        if ((word.x <= x && x <=  word.x + word.size) && (y <= word.y && word.y <= y + newWord.size))
+                        {
+                            int incX = x;
+                            int incY = word.y;
+                            if (word[incX] != newWord[incY]) return false;
+                        }
+                    }
+                    else
+                    {
+                        if (x <= word.x && word.x <= x+newWord.size && word.y <= y && y <= word.y + word.size)
+                        {
+                            int incX = word.x;
+                            int incY = y;
+                            if (word[incY] != newWord[incX]) return false;
+                        }
+                    }
                 }
                 
             }
             return true;
+        }
+
+        public int CountOfIntersection(Word incWord, int x, int y)
+        {
+            int cnt = 0;
+            foreach (Word word in words)
+            {
+                if (incWord.isVertical == word.isVertical) continue;
+                if (word.isVertical)
+                {
+                    if ((word.x <= x + incWord.size && word.x >= x) && (y <= word.y + word.size && y >= word.y)) cnt++;
+                    continue;
+                }
+                if ((word.y <= y + incWord.size && word.y >= y) && (x <= word.x + word.size && x >= word.x)) cnt ++;
+            }
+            return cnt;
         }
 
         public bool AddWord(string word)
@@ -76,6 +112,20 @@ namespace cris_cros
                 return true;
             }
 
+            double currRatio = area / countOfCrossing;
+            double minRatio = currRatio;
+
+            int currWordX = 0;
+            int currWordY = 0;
+
+            Word wordToAdd = new Word(currWordX, currWordY, word, true);
+            int newHeigth = height;
+            int newWidth = width;
+            int inter = 1;
+            int maxInter = 1;
+
+            bool isAdd = false;
+
             foreach (Word insWord in words) {
                 for (int i = 0; i < insWord.size; i++) {
                     for (int j = 0; j < word.Length; j++)
@@ -88,34 +138,69 @@ namespace cris_cros
                                 int newWordX = insWord.x + i;
                                 int newWordY = insWord.y - j;
 
-                                Word newWord = new Word(newWordX, newWordY, word, true);
+                                Word curWord = new Word(newWordX, newWordY, word, true);
 
-                                if (IsCanAdd(insWord, newWord, newWordX, newWordY)) {
-                                    words.Add(newWord);
-                                    wordCount++;
-                                    return true;
+                                if (IsCanAdd(insWord, wordToAdd, newWordX, newWordY)) {
+
+                                    if (!isAdd) wordToAdd = curWord;
+
+                                    // найти количество перестановок
+                                    isAdd = true;
+                                    inter = CountOfIntersection(insWord, newWordX, newWordY);
+                                    newHeigth = word.Length > height ? word.Length : height;
+                                    minRatio = newHeigth * width / (countOfCrossing + inter);
+
+                                    if (currRatio > minRatio)
+                                    {
+                                        currWordX = newWordX;
+                                        currWordY = newWordY;
+                                        currRatio = minRatio;
+                                        maxInter = inter;
+                                        wordToAdd = new Word(currWordX, currWordY, word, true);
+                                    }
                                 } 
                             }
                             else
                             {
                                 //проверка возможности вставки
-                                int newWordX = insWord.x + j;
+                                int newWordX = insWord.x - j;
                                 int newWordY = insWord.y + i;
 
-                                Word newWord = new Word(insWord.x + j, insWord.y + i, word, false);
+                                Word curWord = new Word(newWordX,  newWordY, word, false);
 
-                                if (IsCanAdd(insWord, newWord, newWordX, newWordY))
+                                if (IsCanAdd(insWord, wordToAdd, newWordX, newWordY))
                                 {
-                                    words.Add(newWord);
-                                    wordCount++;
-                                    return true;
+                                    if (!isAdd) wordToAdd = curWord;
+                                    
+                                    isAdd = true;
+                                    inter = CountOfIntersection(insWord, newWordX, newWordY);
+                                    newWidth = word.Length > width ? word.Length : width;
+                                    minRatio = newWidth * height / (countOfCrossing + inter);
+
+                                    if (currRatio > minRatio)
+                                    {
+                                        currWordX = newWordX;
+                                        currWordY = newWordY;
+                                        currRatio = minRatio;
+                                        maxInter = inter;
+                                        wordToAdd = new Word(currWordX, currWordY, word, false);
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            return true;
+            if (isAdd) {
+                width = newWidth;
+                height = newHeigth;
+                countOfCrossing += maxInter;
+                words.Add(wordToAdd);
+                wordCount++;
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -69,7 +69,7 @@ namespace cris_cros
             WordTable wordTable = new WordTable();
             if (!wordTable.FillWordTable(words))
             {
-                MessageBox.Show("0");
+                MessageBox.Show("Невозможно составить таблицу");
                 return;
             }
 
