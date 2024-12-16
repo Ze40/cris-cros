@@ -487,3 +487,7 @@ if (IsCanAdd(insWord, curWord, newWordX, newWordY))
 
         }
 ```
+Премеры работы алгоритма:
+![Снимок экрана 2024-12-16 104719](https://github.com/user-attachments/assets/e1376be9-7c98-4598-b6be-3d33ae4b1e2f)
+![Снимок экрана 2024-12-16 105259](https://github.com/user-attachments/assets/1da914b5-0ca6-4ee2-bba2-1f4ad9787153)
+
