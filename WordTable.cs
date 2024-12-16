@@ -8,8 +8,6 @@ namespace cris_cros
 {
     public class WordTable
     {
-        int X;
-        int Y;
         public int height;
         public int width;
 
@@ -21,8 +19,6 @@ namespace cris_cros
 
         public WordTable() {
             area = 0;
-            X = 0;
-            Y = 0;
             height = 0;
             width = 0;
             countOfCrossing = 0;
